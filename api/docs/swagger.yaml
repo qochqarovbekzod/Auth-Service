@@ -1,0 +1,476 @@
+basePath: /
+definitions:
+  users.ChangeUserTypeRequeste:
+    properties:
+      id:
+        type: string
+      user_type:
+        type: string
+    type: object
+  users.ChangeUserTypeResponse:
+    properties:
+      id:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+      uset_type:
+        type: string
+    type: object
+  users.DeleteUserResponse:
+    properties:
+      success:
+        type: string
+    type: object
+  users.EditProfileRequeste:
+    properties:
+      bio:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+    type: object
+  users.EditProfileResponse:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+      user_type:
+        type: string
+    type: object
+  users.GetAllUsersResponse:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/users.User'
+        type: array
+    type: object
+  users.LogInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  users.LogInResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+    type: object
+  users.PasswordResetRequest:
+    properties:
+      email:
+        type: string
+      password_hash:
+        type: string
+    type: object
+  users.PasswordResetResponse:
+    properties:
+      success:
+        type: string
+    type: object
+  users.SignUpRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+      user_type:
+        type: string
+    type: object
+  users.SignUpResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+      user_type:
+        type: string
+    type: object
+  users.TokenGenerationResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+    type: object
+  users.User:
+    properties:
+      full_name:
+        type: string
+      id:
+        type: string
+      user_name:
+        type: string
+      uset_type:
+        type: string
+    type: object
+  users.ViewProfileResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+      user_type:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: Auth service
+  version: "1.0"
+paths:
+  /api/v1/auth/:
+    get:
+      consumes:
+      - application/json
+      description: Get all users with optional filtering
+      parameters:
+      - description: User Name
+        in: query
+        name: user_name
+        type: string
+      - description: Password
+        in: query
+        name: password
+        type: string
+      - description: Email
+        in: query
+        name: email
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get All Users Successful
+          schema:
+            $ref: '#/definitions/users.GetAllUsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - User
+  /api/v1/auth/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete Successful
+          schema:
+            $ref: '#/definitions/users.DeleteUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete User
+      tags:
+      - User
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Login
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/users.LogInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Successful
+          schema:
+            $ref: '#/definitions/users.LogInResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Login User
+      tags:
+      - User
+  /api/v1/auth/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get User Successful
+          schema:
+            $ref: '#/definitions/users.ViewProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get User by ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/users.EditProfileRequeste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Successful
+          schema:
+            $ref: '#/definitions/users.EditProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update User
+      tags:
+      - User
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Generate a new token for an existing user
+      parameters:
+      - in: header
+        name: refresh_token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token Generation Successful
+          schema:
+            $ref: '#/definitions/users.TokenGenerationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Generate Token
+      tags:
+      - User
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new User item
+      parameters:
+      - description: Create User
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/users.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.SignUpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create User
+      tags:
+      - User
+  /api/v1/auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset an existing user's password
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Reset Password
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/users.PasswordResetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password Reset Successful
+          schema:
+            $ref: '#/definitions/users.PasswordResetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reset User Password
+      tags:
+      - User
+  /api/v1/auth/type:
+    put:
+      consumes:
+      - application/json
+      description: Update user type
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/users.ChangeUserTypeRequeste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Successful
+          schema:
+            $ref: '#/definitions/users.ChangeUserTypeResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update User Type
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
